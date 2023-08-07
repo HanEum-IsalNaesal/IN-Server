@@ -3,8 +3,9 @@ const Account = require('../model/Account');
 const options = require('../config/secretkey');
 const jwt = require('jsonwebtoken');
 
-exports.auth = async(req, res) => {
-    const { rUsername, rPassword} = req.query;
+exports.auth = async(req, res, next) => {
+    const { rUsername, rPassword} = req.body;
+    
     if(rUsername == null || rPassword == null)
     {
         res.send("Invaild credentials");
@@ -12,34 +13,54 @@ exports.auth = async(req, res) => {
     }
     
     var userAccount = await Account.findOne({ username: rUsername });
-    
+    console.log(userAccount);
     if(userAccount)
     {
         if(rPassword == userAccount.password){
-            
-            //Access Token 발급
+            try{
+                    //Access Token 발급
 
-            const existingUser = {
-                email: existingUser.email,
-                success: true,
-            };
+                const existingUser = {
+                    email: userAccount.username,
+                    success: true,
+                };
 
-            // 유저 정보와 시크릿 키, 알고리즘 입력
-            //option.option 액세스토큰은 짧아야하기 때문에 30분으로 설정
-            const AccessToken = jwt.sign(existingUser, options.secretKey, options.option); 
+                // 유저 정보와 시크릿 키, 알고리즘 입력
+                //option.option 액세스토큰은 짧아야하기 때문에 30분으로 설정
+                const AccessToken = jwt.sign(existingUser, options.secretKey, options.option); 
 
-            const refreshToken = jwt.sign(user2, options.secretKey. option.option2);
-            
-            userAccount.lastAuthentication = Date.now();
-            await userAccount.save();
+                const refreshToken = jwt.sign(existingUser, options.secretKey. options.option2);
 
-            console.log("Retrieving account...");
-            res.send(userAccount);
-            return;
+                userAccount.lastAuthentication = Date.now();
+                await userAccount.save();
+
+                // key: accessToken, value: AccessToken, 옵션 secure: false https뿐만 아니라 여러 프로토콜이 접근가능
+                res.cookie("accessToken", AccessToken, {
+                    secure: false, // true일시 https에서만 접근 가능
+                    httponly: true, // 오직 웹서버만 접근가능
+                    maxAge : 100000 
+                });
+
+                res.cookie("refreshToken",  refreshToken, {
+                    secure: false, // true일시 https에서만 접근 가능
+                    httponly: true, // 오직 웹서버만 접근가능
+                    maxAge : 10000000 
+                });
+                console.log("Retrieving account...");
+                res.send(userAccount);
+                next();
+                return;
+                
+            }catch (error){
+                if(error){
+                    next(error);
+                    console.log("access Token과 refresh Token 발급 과정에서 문제가 생겨 다음 함수로 이어질 수가 없다.");
+                }
+            }
         }
+    } else {
+        res.send("Invalid credentials");
     }
-    res.send("Invalid credentials");
-    return;
 }
 
 exports.signin = async(req, res) =>{

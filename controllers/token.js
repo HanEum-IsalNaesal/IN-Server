@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 exports.verifyTokens = (req, res, next) => {
+    //토큰을 검증하기위해 메 페이지마다 클라이언트가 가지고 있는 쿠키를 까서 액세스토큰과 리프레시토큰을 확인한다.
     const { accessToken, refreshToken } = req.cookies;
     jwt.verify(accessToken, process.env.ACCESS_SECRET, (err, decoded) => {
         if(err){

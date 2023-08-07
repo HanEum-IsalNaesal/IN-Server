@@ -1,5 +1,5 @@
 module.exports = {
-    sercretKey : 'as5d6q889as5df6',
+    secretKey : 'as5d6q889as5df6',
     option : {
         algorithm : "HS256",
         expiresIn : "30m",
