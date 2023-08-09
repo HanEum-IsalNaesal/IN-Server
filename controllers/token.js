@@ -53,7 +53,7 @@ exports.refreshAccessToken = (req, res) => {
         // 새로운 액세스 토큰 생성
         const user = {
           username: decoded_username,
-          success: success,
+          success: true,
         };
         const newAccessToken = jwt.sign(user, process.env.ACCESS_SECRET, options.option);
   

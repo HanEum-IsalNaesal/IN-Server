@@ -27,9 +27,11 @@ exports.auth = async(req, res, next) => {
 
                 // 유저 정보와 시크릿 키, 알고리즘 입력
                 //option.option 액세스토큰은 짧아야하기 때문에 30분으로 설정
+                
+                // 페이로드, 시크릿키, 헤더 순 
                 const AccessToken = jwt.sign(existingUser, options.secretKey, options.option); 
 
-                const refreshToken = jwt.sign(existingUser, options.secretKey. options.option2);
+                const refreshToken = jwt.sign(existingUser, options.secretKey, options.option2);
 
                 userAccount.lastAuthentication = Date.now();
                 await userAccount.save();
@@ -37,14 +39,12 @@ exports.auth = async(req, res, next) => {
                 // key: accessToken, value: AccessToken, 옵션 secure: false https뿐만 아니라 여러 프로토콜이 접근가능
                 res.cookie("accessToken", AccessToken, {
                     secure: false, // true일시 https에서만 접근 가능
-                    httponly: true, // 오직 웹서버만 접근가능
-                    maxAge : 100000 
+                    httponly: true, // 오직 웹서버만 접근가능                  
                 });
 
                 res.cookie("refreshToken",  refreshToken, {
                     secure: false, // true일시 https에서만 접근 가능
                     httponly: true, // 오직 웹서버만 접근가능
-                    maxAge : 10000000 
                 });
                 console.log("Retrieving account...");
                 res.send(userAccount);
@@ -63,7 +63,7 @@ exports.auth = async(req, res, next) => {
     }
 }
 
-exports.signin = async(req, res) =>{
+exports.register = async(req, res) =>{
     const {rUsername, rPassword, rName } = req.body;
     
     // 회원가입 
@@ -82,9 +82,11 @@ exports.signin = async(req, res) =>{
         });
         await newAccount.save();
 
-        res.statusCode(200)
+        res.status(200)
         .send(
             {result : "success"}
             );
+
+        console.log("아이디 생성");
     }
 }

@@ -36,7 +36,7 @@ app.post('/account', authenticationRoutes.auth);
 
 // 회원가입
 
-app.post('/account/signform', authenticationRoutes.signin);
+app.post('/registerform', authenticationRoutes.register);
 
 const port = 13756
 
