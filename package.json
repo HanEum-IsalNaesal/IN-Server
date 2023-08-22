@@ -10,6 +10,10 @@
     "method-override": "^3.0.0",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.0",
-    "npm": "^9.8.1"
+    "node-fetch": "^2.6.6",
+    "npm": "^9.8.1",
+    "qs": "^6.11.2",
+    "upgrade": "^1.1.0",
+    "winston": "^3.10.0"
   }
 }

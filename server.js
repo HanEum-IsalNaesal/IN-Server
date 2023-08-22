@@ -7,6 +7,7 @@ const jwt = require('./controllers/token');
 const methodOverride = require('method-override');
 const router = express.Router();
 const axios = require('axios');
+const OuathControllers = require('./controllers/OauthControllers');
 
 
 
@@ -31,7 +32,7 @@ const authenticationRoutes = require('./controllers/authenticationRoutes');
 
 const GOOGLE_CLIENT_ID = '268567930884-ce5s3a5nnjtjv383rilihl0abe9sbja6.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECRET = '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';
-const GOOGLE_REDIRECT_URI = 'http://localhost:13756/login/redirect';
+const GOOGLE_REDIRECT_URI = 'http://localhost:13756/oauth/google';
 
 
 // Routes
@@ -42,12 +43,12 @@ const GOOGLE_REDIRECT_URI = 'http://localhost:13756/login/redirect';
 app.get('/', (req, res) => {
     res.send(`
         <h1>Log in</h1>
-        <a href="/login">Log in</a>
+        <a href="/oauth/test">Log in</a>
     `);
 });
 
 
-app.get('/login', (req, res) => {
+app.get('/oauth/test', (req, res) => {
     let url = 'https://accounts.google.com/o/oauth2/v2/auth';
 	// client_id는 위 스크린샷을 보면 발급 받았음을 알 수 있음
 	// 단, 스크린샷에 있는 ID가 아닌 당신이 직접 발급 받은 ID를 사용해야 함.
@@ -71,11 +72,7 @@ app.get('/login', (req, res) => {
 // 우리가 http://localhost:3000/login/redirect를
 // 구글에 redirect_uri로 등록했고,
 // 위 url을 만들 때도 redirect_uri로 등록했기 때문
-app.get('/login/redirect', (req, res) => {
-    const { code } = req.query;
-    console.log(`code: ${code}`);
-    res.send('ok');
-});
+app.get('/oauth/:coperation', OuathControllers.oauth);
 
 app.post('/account', authenticationRoutes.auth);
 
