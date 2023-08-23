@@ -1,18 +1,19 @@
 // Account models
 const Account = require('../model/Account');
+const AccountGoogle = require('../model/AccountGoogle');
 const options = require('../config/secretkey');
 const jwt = require('jsonwebtoken');
 
 exports.auth = async(req, res, next) => {
-    const { rUsername, rPassword} = req.body;
+    const { rUserEmail, rPassword} = req.body;
     
-    if(rUsername == null || rPassword == null)
+    if(rUserEmail == null || rPassword == null)
     {
         res.send("Invaild credentials");
         return;
     }
     
-    var userAccount = await Account.findOne({ username: rUsername });
+    var userAccount = await Account.findOne({ useremail: rUserEmail });
     console.log(userAccount);
     if(userAccount)
     {
@@ -21,7 +22,7 @@ exports.auth = async(req, res, next) => {
                     //Access Token 발급
 
                 const existingUser = {
-                    email: userAccount.username,
+                    email: userAccount.useremail,
                     success: true,
                 };
 
@@ -63,6 +64,52 @@ exports.auth = async(req, res, next) => {
     }
 }
 
+exports.authGoogle = async(req, res, next) => {
+    const user_email = req.cookies.UserEmail;
+    const AccessToken = req.cookies.AccessToken;
+    const user_name = req.cookies.UserName;
+
+    
+    // 구글에서 받은 이메일과 패스워드가 없으면 잘못된 정보
+    if(user_email == null)
+    {
+        res.send("Invaild credentials");
+        return;
+    }
+    
+    var userAccount = await AccountGoogle.findOne({ useremail: user_email });
+    
+
+    if(userAccount)
+    {
+        
+    //Access Token
+        userAccount.lastAuthentication = Date.now();
+        await userAccount.save();
+
+        // 구글에서 받은 액세스토큰을 전달
+        res.cookie("accessToken", AccessToken, {
+            secure: false, // true일시 https에서만 접근 가능
+            httponly: true, // 오직 웹서버만 접근가능                  
+        });
+        console.log("Retrieving account...");
+        res.send("login success");
+        next();
+        return;
+    } else {
+        // 구글 로그인에서 전달한 user_email이 데이터베이스에 없으면 계정을 생성.
+        var newAccountGoogle = new AccountGoogle({
+            useremail : user_email,
+            Name : user_name,
+            lastAuthentication : Date.now(),
+            isOauthAccount : true,  
+        });
+        await newAccountGoogle.save();
+
+        res.send("sign in");
+    }
+};
+
 exports.register = async(req, res) =>{
     const {rUsername, rPassword, rName } = req.body;
     
@@ -75,10 +122,11 @@ exports.register = async(req, res) =>{
     }else{
         // 클라이언트 파라미터가 전부 올바르게 온 경우 계정 생성
         var newAccount = new Account({
-            username : rUsername,
+            useremail : rUsername,
             password : rPassword,
             Name : rName,
-            lastAuthentication : Date.now(),  
+            lastAuthentication : Date.now(),
+            isOauthAccount : false,  
         });
         await newAccount.save();
 
@@ -89,4 +137,4 @@ exports.register = async(req, res) =>{
 
         console.log("아이디 생성");
     }
-}
+};

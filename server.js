@@ -64,6 +64,7 @@ app.get('/oauth/test', (req, res) => {
   	    
   	// 완성된 url로 이동
   	// 이 url이 위에서 본 구글 계정을 선택하는 화면임.
+    console.log(url);
 	res.redirect(url);
 });
 
@@ -74,14 +75,30 @@ app.get('/oauth/test', (req, res) => {
 // 위 url을 만들 때도 redirect_uri로 등록했기 때문
 app.get('/oauth/:coperation', OuathControllers.oauth);
 
+//일반 로그인
 app.post('/account', authenticationRoutes.auth);
+//구글 로그인과 회원가입
+app.get('/accountGoogle', authenticationRoutes.authGoogle);
 
-// 회원가입
-
+//일반 회원가입
 app.post('/registerform', authenticationRoutes.register);
 
 const port = 13756
 
+
+app.get('/main', (req, res) => {
+    const AccessToken = req.cookies.accessToken;
+    const UserName = req.cookies.UserName;
+    const UserEmail = req.cookies.UserEmail;
+
+    const UserData = {
+        accessToken:  AccessToken,
+        username : UserName,
+        useremail: UserEmail,
+    };
+
+    res.json(UserData);
+});
 app.listen(keys.port, () => {
     console.log("Listening on " + keys.port);
 });

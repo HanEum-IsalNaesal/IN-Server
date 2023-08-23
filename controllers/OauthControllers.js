@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const winston = require('winston');
 const logger = winston.createLogger();
 const axios = require('axios');
+const { response } = require('express');
 class google {
     constructor(code){
         this.url = 'https://oauth2.googleapis.com/token';
@@ -14,7 +15,7 @@ class google {
         this.userInfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
         
     }
-}
+};
 
 const getOption = (coperation, code) => {
     switch(coperation){
@@ -30,28 +31,41 @@ const getAccessToken = async(options) => {
         grant_type: 'authorization_code',
         client_id: options.clientID,
         client_secret: options.SecretPW,
-        redirectUri: options.redirectUri,
+        redirect_uri: options.redirectUri,
+    }, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',  // 추가된 부분
+        },
     });
     return resp.data;
 };
 
 const getUserInfo = async (url, access_token) => {
-    const resp = await axios.post(url, {
-        headers: {
-            Authorization: `Bearer ${access_token}`,
-        }
-    });
-    return resp.data;
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+            },
+        });
+        return response.data
+    } catch (error) {
+        console.log(error);
+    }
+    return null;
 };
 
 exports.oauth = async (req, res) => {
     const coperation = req.params.coperation;
     const code = req.query.code;
     const options = getOption(coperation, code);
-    console.log("a");
+   
     const token = await getAccessToken(options);
     console.log(token.access_token);
     const userInfo = await getUserInfo(options.userInfoUrl, token.access_token);
-    console.log("c");
+    res.cookie("accessToken", token.access_token);
+    res.cookie("UserName", userInfo.name);
+    res.cookie("UserEmail", userInfo.email);
+    // 토큰을 발급받고 쿠키의 형태로 메인 페이지로 넘겨줌.
+    res.redirect('/accountGoogle');
 }
 
