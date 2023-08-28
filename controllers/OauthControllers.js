@@ -57,6 +57,8 @@ const getUserInfo = async (url, access_token) => {
 exports.oauth = async (req, res) => {
     const coperation = req.params.coperation;
     const code = req.query.code;
+    
+
     const options = getOption(coperation, code);
    
     const token = await getAccessToken(options);
@@ -66,6 +68,6 @@ exports.oauth = async (req, res) => {
     res.cookie("UserName", userInfo.name);
     res.cookie("UserEmail", userInfo.email);
     // 토큰을 발급받고 쿠키의 형태로 메인 페이지로 넘겨줌.
-    res.redirect('/accountGoogle');
+    res.send('ok');
 }
 

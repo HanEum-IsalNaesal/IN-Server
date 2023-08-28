@@ -70,9 +70,11 @@ app.get('/oauth/test', (req, res) => {
 
 // 구글 계정 선택 화면에서 계정 선택 후 redirect 된 주소
 // 아까 등록한 GOOGLE_REDIRECT_URI와 일치해야 함
-// 우리가 http://localhost:3000/login/redirect를
+// 우리가 http://localhost:13756/oauth/google를
 // 구글에 redirect_uri로 등록했고,
 // 위 url을 만들 때도 redirect_uri로 등록했기 때문
+
+// Authorization Server : 인증 서버 => localhost:13756/oauth/google
 app.get('/oauth/:coperation', OuathControllers.oauth);
 
 //일반 로그인
@@ -97,7 +99,7 @@ app.get('/main', (req, res) => {
         useremail: UserEmail,
     };
 
-    res.json(UserData);
+    res.json(UserData.useremail);
 });
 app.listen(keys.port, () => {
     console.log("Listening on " + keys.port);

@@ -94,6 +94,7 @@ exports.authGoogle = async(req, res, next) => {
         });
         console.log("Retrieving account...");
         res.send("login success");
+        console.log("login success");
         next();
         return;
     } else {
@@ -108,6 +109,7 @@ exports.authGoogle = async(req, res, next) => {
 
         res.send("sign in");
     }
+    
 };
 
 exports.register = async(req, res) =>{
