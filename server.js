@@ -5,10 +5,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('./controllers/token');
 const methodOverride = require('method-override');
-const router = express.Router();
 const axios = require('axios');
 const OuathControllers = require('./controllers/OauthControllers');
-
+const router = require("./routes/index");
 
 
 const mongoose = require('mongoose');
@@ -20,6 +19,7 @@ mongoose.connect(keys.mongoURI, {
 app.use(bodyParser.urlencoded({
     extended : true
 }));
+app.use("/", router);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -38,14 +38,8 @@ const GOOGLE_REDIRECT_URI = 'http://localhost:13756/oauth/google';
 // Routes
 
 
-
 // 로그인
-app.get('/', (req, res) => {
-    res.send(`
-        <h1>Log in</h1>
-        <a href="/oauth/test">Log in</a>
-    `);
-});
+
 
 
 app.get('/oauth/test', (req, res) => {

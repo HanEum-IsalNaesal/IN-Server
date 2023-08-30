@@ -1,5 +1,4 @@
 const qs = require('qs');
-const fetch = require('node-fetch');
 const winston = require('winston');
 const logger = winston.createLogger();
 const axios = require('axios');
@@ -54,6 +53,7 @@ const getUserInfo = async (url, access_token) => {
     return null;
 };
 
+//route : /oauth/google
 exports.oauth = async (req, res) => {
     const coperation = req.params.coperation;
     const code = req.query.code;
@@ -67,7 +67,8 @@ exports.oauth = async (req, res) => {
     res.cookie("accessToken", token.access_token);
     res.cookie("UserName", userInfo.name);
     res.cookie("UserEmail", userInfo.email);
-    // 토큰을 발급받고 쿠키의 형태로 메인 페이지로 넘겨줌.
+    
+
     res.send('ok');
 }
 
