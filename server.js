@@ -46,12 +46,12 @@ const authenticationRoutes = require('./controllers/authenticationRoutes');
 
 
 //일반 로그인
-app.post('/account', authenticationRoutes.auth);
+
 //구글 로그인과 회원가입
-app.get('/Google', authenticationRoutes.authGoogle);
+
 
 //일반 회원가입
-app.post('/registerform', authenticationRoutes.register);
+
 
 const port = 13756
 
