@@ -3,6 +3,7 @@ const winston = require('winston');
 const logger = winston.createLogger();
 const axios = require('axios');
 const { response } = require('express');
+
 class google {
     constructor(code){
         this.url = 'https://oauth2.googleapis.com/token';
@@ -69,6 +70,6 @@ exports.oauth = async (req, res) => {
     res.cookie("UserEmail", userInfo.email);
     
 
-    res.send('ok');
+    res.redirect("/login/google");
 }
 

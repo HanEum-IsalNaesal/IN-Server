@@ -66,7 +66,7 @@ exports.auth = async(req, res, next) => {
 
 exports.authGoogle = async(req, res, next) => {
     const user_email = req.cookies.UserEmail;
-    const AccessToken = req.cookies.AccessToken;
+    const AccessToken = req.cookies.accessToken;
     const user_name = req.cookies.UserName;
 
     
