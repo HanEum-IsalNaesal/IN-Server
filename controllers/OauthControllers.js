@@ -9,7 +9,7 @@ class google {
         this.url = 'https://oauth2.googleapis.com/token';
         this.clientID = '268567930884-ce5s3a5nnjtjv383rilihl0abe9sbja6.apps.googleusercontent.com';
         this.SecretPW = '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';
-        this.redirectUri = 'http://localhost:13756/oauth/google';
+        this.redirectUri = 'http://localhost:80/oauth/google';
         this.code = code;
 
         this.userInfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';

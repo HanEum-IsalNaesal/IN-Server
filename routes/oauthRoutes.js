@@ -3,7 +3,7 @@ const OauthControllers = require('../controllers/OauthControllers');
 const authenticationRoutes = require('../controllers/authenticationRoutes');
 const GOOGLE_CLIENT_ID = '268567930884-ce5s3a5nnjtjv383rilihl0abe9sbja6.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECRET = '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';
-const GOOGLE_REDIRECT_URI = 'http://localhost:13756/oauth/google';
+const GOOGLE_REDIRECT_URI = 'http://localhost:80/oauth/google';
 
 router.get("/test", (req, res) => {
     let url = 'https://accounts.google.com/o/oauth2/v2/auth';
