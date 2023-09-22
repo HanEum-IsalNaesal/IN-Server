@@ -7,9 +7,9 @@ WORKDIR /app
 # port 80
 EXPOSE 80
 # 처음 실행때 패키지 깔리기
-COPY package*.json
-COPY . .
+COPY package*.json ./
+COPY . ./
 RUN npm install
 
 # 
-CMD ["pm2","start" "sever.js"]
+CMD ["pm2-runtime","start","sever.js"]
