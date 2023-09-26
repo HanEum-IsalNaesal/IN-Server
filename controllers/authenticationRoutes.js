@@ -4,6 +4,8 @@ const AccountGoogle = require('../model/AccountGoogle');
 const options = require('../config/secretkey');
 const jwt = require('jsonwebtoken');
 
+    
+
 exports.auth = async(req, res, next) => {
     const { rUserEmail, rPassword} = req.body;
     
@@ -36,7 +38,7 @@ exports.auth = async(req, res, next) => {
 
                 userAccount.lastAuthentication = Date.now();
                 await userAccount.save();
-
+                
                 // key: accessToken, value: AccessToken, 옵션 secure: false https뿐만 아니라 여러 프로토콜이 접근가능
                 res.cookie("accessToken", AccessToken, {
                     secure: false, // true일시 https에서만 접근 가능

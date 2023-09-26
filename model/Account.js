@@ -7,6 +7,8 @@ const accountSchema = new Schema({
     Name: String,
     lastAuthentication: Date,
     isOauthAccount : Boolean,
+    friend_waiting_list : [{type: mongoose.Schema.ObjectId, ref:'User'}],
+    friend_list : [{type: mongoose.Schema.ObjectId, ref:'User' }],
 });
 
 module.exports = mongoose.model('accounts', accountSchema);

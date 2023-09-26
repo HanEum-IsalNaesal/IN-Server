@@ -49,7 +49,7 @@ const authenticationRoutes = require('./controllers/authenticationRoutes');
 
 //구글 로그인과 회원가입
 
-
+app.get(jwt.verifyTokens, )
 //일반 회원가입
 
 
