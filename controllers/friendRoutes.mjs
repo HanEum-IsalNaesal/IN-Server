@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser');
 
-const User = require('../model/Account');
+const User = require('../model/Account.mjs');
 
 
 

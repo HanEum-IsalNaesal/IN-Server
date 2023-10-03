@@ -1,11 +1,22 @@
-const jwt = require('jsonwebtoken');
-const options = require('../config/secretkey');
+import jwt from 'jsonwebtoken';
+import {options} from '../config/secretkey.mjs';
 
-export class TokenService {
-  static getUserIdFromRequst = (req) => {
-    const accessToken = this.extractAccessTokensFromRequest(req);
-    const refreshToken = this.extractRefreshTokenFromRequest(req);
-    
+
+export default class TokenService {
+  
+  
+  static accessToken;
+  static refreshToken;
+
+
+
+  static getTokensFromRequest = (req) => {
+    this.accessToken = this.extractAccessTokenFromRequest(req);
+    this.refreshToken = this.extractRefreshTokenFromRequest(req);
+    return [this.accessToken, this.refreshToken];
+  }
+
+  static getUserIdFromAccessToken = (accessToken) => {
     const payload = this.decodeAccessToken(accessToken);
 
     if (!payload){
@@ -15,16 +26,16 @@ export class TokenService {
   }
 
   static extractAccessTokenFromRequest = (req) => {
-    const {accessToken} = req.cookies.access_token;
+    const accessToken = req.cookies.accessToken;
     return accessToken;
   }
   static extractRefreshTokenFromRequest = (req) => {
-    const {refreshToken} = req.cookies.refresh_token;
+    const refreshToken = req.cookies.refreshToken;
     return refreshToken;
   }
   static decodeAccessToken = (accessToken) => {
     try {
-      const decodedPayload = jwt.verify(accessToken, process.env.ACCESS_SECRET);
+      const decodedPayload = jwt.verify(accessToken, options.secretKey, options.option);
       return decodedPayload;
     } catch(err) {
       console.log(err);
@@ -33,15 +44,17 @@ export class TokenService {
   }
   static decodeRefreshToken = (refreshToken) => {
     try {
-      const decodedPayload = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+      const decodedPayload = jwt.verify(refreshToken, options.secretKey, options.option2);
       return decodedPayload;
     } catch(err) {
       console.log(err);
       return null;
     }
   }
-  static publishAccessToken = (accessToken, refreshToken) => {
+  static publishAccessTokenFromRefreshToken = (accessToken, refreshToken) => {
+    // 문제가 없는경우 그대로 리턴
     if (accessToken) {
+      this.accessToken = accessToken;
       return accessToken;
     }
     if (refreshToken) {
@@ -51,15 +64,16 @@ export class TokenService {
 
         //재발급을 위해 새로운 액세스 토큰의 페이로드 생성
         const accessTokenPayload = {
-          email: userAccount.useremail,
+          email: decoded_useremail,
           success : true,
         }
 
         const newAccessToken = jwt.sign(accessTokenPayload, process.env.ACCESS_SECRET, options.option);
+        this.accessToken = newAccessToken;
 
         return newAccessToken;
       } catch(err) {
-        console.log("발급 과정에서 문제가 생겼습니다.");
+        console.log("publishAccessTokenFromRefreshToken 토큰 발급 과정에서 문제가 생겼습니다.");
         return null;
       }
     }
@@ -68,6 +82,9 @@ export class TokenService {
     }
   }
 }
+
+
+
 // exports.verifyTokens = (req, res, next) => {
 //     //토큰을 검증하기위해 메 페이지마다 클라이언트가 가지고 있는 쿠키를 까서 액세스토큰과 리프레시토큰을 확인한다.
 //     const { accessToken, refreshToken } = req.cookies;

@@ -1,16 +1,16 @@
-const express = require('express');
-const keys = require('./config/keys');
+import express from 'express';
+import keys from './config/keys.mjs'; // .mjs 확장자로 변경된 파일
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import jwt from './controllers/token.mjs'; // .mjs 확장자로 변경된 파일
+import methodOverride from 'method-override';
+import axios from 'axios';
+import {OauthControllers} from './controllers/OauthControllers.mjs'; // .mjs 확장자로 변경된 파일
+import router from './routes/index.mjs'; // .mjs 확장자로 변경된 파일
+
 const app = express();
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const jwt = require('./controllers/token');
-const methodOverride = require('method-override');
-const axios = require('axios');
-const OuathControllers = require('./controllers/OauthControllers');
-const router = require("./routes/index");
 
-
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 mongoose.connect(keys.mongoURI, {
     useNewUrlParser: true, useUnifiedTopology: true
 });
@@ -29,7 +29,7 @@ router.use(methodOverride("_method", {
     methods: ["POST", "GET"]
 }));
 //controllers
-const authenticationRoutes = require('./controllers/authenticationRoutes');
+import {authenticationController} from './controllers/authenticationController.mjs';
 // Routes
 
 

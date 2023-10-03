@@ -1,8 +1,8 @@
-const qs = require('qs');
-const winston = require('winston');
+import qs from 'qs';
+import winston from 'winston';
 const logger = winston.createLogger();
-const axios = require('axios');
-const { response } = require('express');
+import axios from 'axios';
+import { response } from 'express';
 
 class google {
     constructor(code){
@@ -55,21 +55,23 @@ const getUserInfo = async (url, access_token) => {
 };
 
 //route : /oauth/google
-exports.oauth = async (req, res) => {
-    const coperation = req.params.coperation;
-    const code = req.query.code;
-    
+export const OauthControllers = {
+    async oauth(req, res){
+        const coperation = req.params.coperation;
+        const code = req.query.code;
+        
 
-    const options = getOption(coperation, code);
-   
-    const token = await getAccessToken(options);
-    console.log(token.access_token);
-    const userInfo = await getUserInfo(options.userInfoUrl, token.access_token);
-    res.cookie("accessToken", token.access_token);
-    res.cookie("UserName", userInfo.name);
-    res.cookie("UserEmail", userInfo.email);
+        const options = getOption(coperation, code);
     
+        const token = await getAccessToken(options);
+        console.log(token.access_token);
+        const userInfo = await getUserInfo(options.userInfoUrl, token.access_token);
+        res.cookie("accessToken", token.access_token);
+        res.cookie("UserName", userInfo.name);
+        res.cookie("UserEmail", userInfo.email);
+        
 
-    res.redirect("/login/google");
+        res.redirect("/login/google");
+    }
 }
 
