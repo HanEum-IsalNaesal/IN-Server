@@ -1,9 +1,11 @@
-const router = require('express').Router();
-const OauthControllers = require('../controllers/OauthControllers');
-const authenticationRoutes = require('../controllers/authenticationRoutes');
+import {Router} from 'express';
+import {OauthControllers} from '../controllers/OauthControllers.mjs';
+import {authenticationController} from '../controllers/authenticationController.mjs';
 const GOOGLE_CLIENT_ID = '268567930884-ce5s3a5nnjtjv383rilihl0abe9sbja6.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECRET = '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';
 const GOOGLE_REDIRECT_URI = 'http://ec2-52-78-237-183.ap-northeast-2.compute.amazonaws.com:80/oauth/google';
+
+const router = Router();
 
 router.get("/test", (req, res) => {
     let url = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -31,4 +33,4 @@ router.get("/test", (req, res) => {
 router.get('/:coperation', OauthControllers.oauth);
 
 
-module.exports = router; 
+export default router;
