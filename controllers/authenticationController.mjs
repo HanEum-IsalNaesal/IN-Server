@@ -20,7 +20,7 @@ export const authenticationController = {
             if(rPassword == userAccount.password){
                 try{
                         //Access Token 발급
-    
+                    
                     const existingUser = {
                         email: userAccount.useremail,
                         success: true,
@@ -30,15 +30,16 @@ export const authenticationController = {
                     //option.option 액세스토큰은 짧아야하기 때문에 30분으로 설정
                     
                     // 페이로드, 시크릿키, 헤더 순 
-                    const AccessToken = jwt.sign(existingUser, options.secretKey, options.option); 
+                    const accessToken = jwt.sign(existingUser, options.secretKey, options.option); 
     
                     const refreshToken = jwt.sign(existingUser, options.secretKey, options.option2);
-    
+                    console.log(accessToken);
+                    console.log(refreshToken);
                     userAccount.lastAuthentication = Date.now();
                     await userAccount.save();
                     
                     // key: accessToken, value: AccessToken, 옵션 secure: false https뿐만 아니라 여러 프로토콜이 접근가능
-                    res.cookie("accessToken", AccessToken, {
+                    res.cookie("accessToken", accessToken, {
                         secure: false, // true일시 https에서만 접근 가능
                         httponly: true, // 오직 웹서버만 접근가능                  
                     });
@@ -114,10 +115,10 @@ export const authenticationController = {
     },
     
     async register(req, res){
-        const {rUsername, rPassword, rName } = req.body;
-        
+        const {rUserEmail, rPassword, rName } = req.body;
+        console.log(rName);
         // 회원가입 
-        if (rUsername == null || rPassword == null || rName == null){
+        if (rUserEmail == null || rPassword == null || rName == null){
             res.status(404)
             .send(
                 {result : "fail"}
@@ -125,7 +126,7 @@ export const authenticationController = {
         }else{
             // 클라이언트 파라미터가 전부 올바르게 온 경우 계정 생성
             var newAccount = new Account({
-                useremail : rUsername,
+                useremail : rUserEmail,
                 password : rPassword,
                 Name : rName,
                 lastAuthentication : Date.now(),
