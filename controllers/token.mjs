@@ -17,12 +17,22 @@ export default class TokenService {
   }
 
   static getUserIdFromAccessToken = (accessToken) => {
-    const payload = this.decodeAccessToken(accessToken);
-
-    if (!payload){
-      return null
+    try{
+      var email;
+      const payload = this.decodeAccessToken(accessToken);
+      console.log(payload);
+      if (payload == null){
+        console.log("기존 액세스 토큰이 만료되어 새로운 액세스 토큰 재발급을 시도합니다.");
+        
+        return null;
+      }
+      email = payload.email;
+      
+      return email;
+    }catch(err){
+      console.log(err);
+      return null;
     }
-    return payload.email;
   }
 
   static extractAccessTokenFromRequest = (req) => {
@@ -51,24 +61,22 @@ export default class TokenService {
       return null;
     }
   }
-  static publishAccessTokenFromRefreshToken = (accessToken, refreshToken) => {
-    // 문제가 없는경우 그대로 리턴
-    if (accessToken) {
-      this.accessToken = accessToken;
-      return accessToken;
-    }
+  static publishAccessTokenFromRefreshToken = (refreshToken) => {
     if (refreshToken) {
       try{
         const decodedPayload = this.decodeRefreshToken(refreshToken);
-        const decoded_useremail = decodedPayload.userEmail;
-
+        if (decodedPayload == null){
+          console.log("리프레시 토큰 만료");
+          return null;
+        }
+        const decoded_useremail = decodedPayload.email;
         //재발급을 위해 새로운 액세스 토큰의 페이로드 생성
         const accessTokenPayload = {
           email: decoded_useremail,
           success : true,
         }
 
-        const newAccessToken = jwt.sign(accessTokenPayload, process.env.ACCESS_SECRET, options.option);
+        const newAccessToken = jwt.sign(accessTokenPayload, options.secretKey, options.option);
         this.accessToken = newAccessToken;
 
         return newAccessToken;

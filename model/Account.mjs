@@ -8,8 +8,8 @@ const accountSchema = new Schema({
   Name: String,
   lastAuthentication: Date,
   isOauthAccount: Boolean,
-  friend_waiting_list: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-  friend_list: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-});
+  friend_waiting_list: [{ type: String}],
+  friend_list: [{ type: String}],
+  });
 
 export default mongoose.model('accounts', accountSchema);
