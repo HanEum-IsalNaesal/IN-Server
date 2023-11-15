@@ -16,23 +16,17 @@ export default class TokenService {
     return [this.accessToken, this.refreshToken];
   }
 
-  static getUserIdFromAccessToken = (accessToken, refreshToken) => {
+  static getUserIdFromAccessToken = (accessToken) => {
     try{
+      var email;
       const payload = this.decodeAccessToken(accessToken);
-      var email = payload.email;
-      if (!payload){
+      console.log(payload);
+      if (payload == null){
         console.log("기존 액세스 토큰이 만료되어 새로운 액세스 토큰 재발급을 시도합니다.");
-        const newAccessToken = this.publishAccessTokenFromRefreshToken(refreshToken);
         
-        const newPayload = this.decodeAccessToken(newAccessToken);
-        
-        res.cookie("accessToken", publishedAccessToken, {
-          secure: false, // true일시 https에서만 접근 가능
-          httponly: true, // 오직 웹서버만 접근가능                  
-        });
-        
-        email = newPayload.email;
+        return null;
       }
+      email = payload.email;
       
       return email;
     }catch(err){

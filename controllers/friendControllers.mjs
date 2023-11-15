@@ -1,6 +1,29 @@
 import FriendService from './friend.mjs';
 
 export const friendControllers = {
+    async resFriendList (req, res){
+        FriendService.setFriendsIdRequest(req); // 요청을 통해서 나의 id와 상대방의 id를 저장합니다.
+        const myEmail = FriendService.getFriendsIdRequset()[0];
+
+        const loadFriendsList = await FriendService.loadFriendsList(myEmail);
+        console.log(loadFriendsList);
+        if(loadFriendsList == null){
+            res.status(500).json("failed loading to friends list");
+        }
+
+        res.status(200).json(loadFriendsList);
+    },
+
+    async resWaitingFriendList (req, res){
+        FriendService.setFriendsIdRequest(req); // 요청을 통해서 나의 id와 상대방의 id를 저장합니다.
+        const myEmail = FriendService.getFriendsIdRequset()[0];
+
+        const loadWaitingFriendList = await FriendService.loadWaitingFriendList(myEmail);
+        if(!loadWaitingFriendList == null){
+            res.status(500).json("failed loading to waiting friends list")
+        }
+        res.status(200).json(loadWaitingFriendList);
+    },
     async requestFriend (req, res){
         FriendService.setFriendsIdRequest(req); // 요청을 통해서 나의 id와 상대방의 id를 저장합니다.
         const myEmail = FriendService.getFriendsIdRequset()[0];
@@ -58,5 +81,5 @@ export const friendControllers = {
         }
 
         res.status(200).json("successed deleteFriend");
-    }
+    } 
 };

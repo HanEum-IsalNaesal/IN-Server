@@ -18,6 +18,31 @@ export default class FriendService{
     return [this.m_myEmail, this.m_opponentEmail];
   } // 0번째 인덱스의 리턴은 자신의 이메일, 1번째 인덱스의 리턴은 상대방의 이메일입니다.
 
+
+  static async loadFriendsList(myEmail){
+    try{
+      const returnedMySelf = await User.findOne({useremail: myEmail});
+      const friendList = returnedMySelf.friend_list;
+      console.log(returnedMySelf);
+      return friendList;
+    }catch(err){
+      console.log(err);
+      return null;
+    }
+  }
+
+  static async loadWaitingFriendList(myEmail){
+    try{
+      const returnedMySelf = await User.findOne({useremail: myEmail});
+      const waitingFriendList = returnedMySelf.friend_waiting_list;
+
+      return waitingFriendList;
+    }catch(err){
+      console.log(err);
+
+      return null;
+    }
+  }
   static async addFriendFromId(myEmail, opponentEmail){
     try{
       const returnedMySelf = await User.findOne({useremail: myEmail});
